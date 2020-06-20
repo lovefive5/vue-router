@@ -9,8 +9,12 @@ import { warn } from '../util/warn'
 const toTypes: Array<Function> = [String, Object]
 const eventTypes: Array<Function> = [String, Array]
 
-const noop = () => {}
+const noop = () => {
+}
 
+/**
+ * 定义一个 RouterLink 组件
+ */
 export default {
   name: 'RouterLink',
   props: {
@@ -22,6 +26,7 @@ export default {
       type: String,
       default: 'a'
     },
+    // 是否精确匹配
     exact: Boolean,
     append: Boolean,
     replace: Boolean,

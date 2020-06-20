@@ -14,6 +14,7 @@ export class HTML5History extends History {
     super(router, base)
 
     this._startLocation = getLocation(this.base)
+    // console.log(this._startLocation)
   }
 
   setupListeners () {
@@ -22,7 +23,9 @@ export class HTML5History extends History {
     }
 
     const router = this.router
+    // 滚动行为
     const expectScroll = router.options.scrollBehavior
+    // 支持滚动 支持 pushState 并且 期望滚动
     const supportsScroll = supportsPushState && expectScroll
 
     if (supportsScroll) {
@@ -85,9 +88,12 @@ export class HTML5History extends History {
   }
 }
 
+// 获取当前地址，如果base已经存在则去掉base部分
 export function getLocation (base: string): string {
+  // 获取浏览器的基础路径并decode
   let path = decodeURI(window.location.pathname)
   if (base && path.toLowerCase().indexOf(base.toLowerCase()) === 0) {
+    // 将 path 截取成新的path
     path = path.slice(base.length)
   }
   return (path || '/') + window.location.search + window.location.hash

@@ -3,6 +3,7 @@ import { extend } from '../util/misc'
 
 export default {
   name: 'RouterView',
+  // 变为无状态、无实例的函数化组件
   functional: true,
   props: {
     name: {
@@ -11,11 +12,14 @@ export default {
     }
   },
   render (_, { props, children, parent, data }) {
+    console.log({ props, children, parent, data })
     // used by devtools to display a router-view badge
     data.routerView = true
 
     // directly use parent context's createElement() function
     // so that components rendered by router-view can resolve named slots
+    // 直接使用父上下文的createElement（）函数
+    // 以便router-view呈现的组件可以解析命名的插槽
     const h = parent.$createElement
     const name = props.name
     const route = parent.$route

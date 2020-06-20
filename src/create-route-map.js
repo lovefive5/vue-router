@@ -72,11 +72,11 @@ function addRouteRecord (
     )
   }
 
-  const pathToRegexpOptions: PathToRegexpOptions =
-    route.pathToRegexpOptions || {}
+  const pathToRegexpOptions: PathToRegexpOptions = route.pathToRegexpOptions || {}
   const normalizedPath = normalizePath(path, parent, pathToRegexpOptions.strict)
 
   if (typeof route.caseSensitive === 'boolean') {
+    // 是否区分大小写
     pathToRegexpOptions.sensitive = route.caseSensitive
   }
 
@@ -112,12 +112,12 @@ function addRouteRecord (
         warn(
           false,
           `Named Route '${route.name}' has a default child route. ` +
-            `When navigating to this named route (:to="{name: '${
-              route.name
-            }'"), ` +
-            `the default child route will not be rendered. Remove the name from ` +
-            `this route and use the name of the default child route for named ` +
-            `links instead.`
+          `When navigating to this named route (:to="{name: '${
+            route.name
+          }'"), ` +
+          `the default child route will not be rendered. Remove the name from ` +
+          `this route and use the name of the default child route for named ` +
+          `links instead.`
         )
       }
     }
@@ -129,6 +129,7 @@ function addRouteRecord (
     })
   }
 
+  // 存入记录到列表和map中
   if (!pathMap[record.path]) {
     pathList.push(record.path)
     pathMap[record.path] = record
@@ -163,13 +164,14 @@ function addRouteRecord (
   }
 
   if (name) {
+    // 按名称保存record
     if (!nameMap[name]) {
       nameMap[name] = record
     } else if (process.env.NODE_ENV !== 'production' && !matchAs) {
       warn(
         false,
         `Duplicate named routes definition: ` +
-          `{ name: "${name}", path: "${record.path}" }`
+        `{ name: "${name}", path: "${record.path}" }`
       )
     }
   }
@@ -193,11 +195,19 @@ function compileRouteRegex (
   return regex
 }
 
+/**
+ * 路径归一
+ * @param path
+ * @param parent
+ * @param strict
+ * @returns {*}
+ */
 function normalizePath (
   path: string,
   parent?: RouteRecord,
   strict?: boolean
 ): string {
+  // 去掉路径中的 \
   if (!strict) path = path.replace(/\/$/, '')
   if (path[0] === '/') return path
   if (parent == null) return path

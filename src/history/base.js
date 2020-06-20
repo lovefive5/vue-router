@@ -72,6 +72,7 @@ export class History {
     this.errorCbs.push(errorCb)
   }
 
+  // 过渡
   transitionTo (
     location: RawLocation,
     onComplete?: Function,

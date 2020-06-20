@@ -16,21 +16,21 @@ import { AbstractHistory } from './history/abstract'
 import type { Matcher } from './create-matcher'
 
 export default class VueRouter {
-  static install: () => void;
-  static version: string;
+  static install: () => void
+  static version: string
 
-  app: any;
-  apps: Array<any>;
-  ready: boolean;
-  readyCbs: Array<Function>;
-  options: RouterOptions;
-  mode: string;
-  history: HashHistory | HTML5History | AbstractHistory;
-  matcher: Matcher;
-  fallback: boolean;
-  beforeHooks: Array<?NavigationGuard>;
-  resolveHooks: Array<?NavigationGuard>;
-  afterHooks: Array<?AfterNavigationHook>;
+  app: any
+  apps: Array<any>
+  ready: boolean
+  readyCbs: Array<Function>
+  options: RouterOptions
+  mode: string
+  history: HashHistory | HTML5History | AbstractHistory
+  matcher: Matcher
+  fallback: boolean
+  beforeHooks: Array<?NavigationGuard>
+  resolveHooks: Array<?NavigationGuard>
+  afterHooks: Array<?AfterNavigationHook>
 
   constructor (options: RouterOptions = {}) {
     this.app = null
@@ -40,6 +40,8 @@ export default class VueRouter {
     this.resolveHooks = []
     this.afterHooks = []
     this.matcher = createMatcher(options.routes || [], this)
+
+    console.log('constructor', this.matcher)
 
     let mode = options.mode || 'hash'
     this.fallback = mode === 'history' && !supportsPushState && options.fallback !== false
@@ -80,6 +82,10 @@ export default class VueRouter {
     return this.history && this.history.current
   }
 
+  /**
+   * 初始化
+   * @param app
+   */
   init (app: any /* Vue component instance */) {
     process.env.NODE_ENV !== 'production' && assert(
       install.installed,
@@ -89,6 +95,7 @@ export default class VueRouter {
 
     this.apps.push(app)
 
+    // 组件销毁 就从 apps 里删除掉
     // set up app destroyed handler
     // https://github.com/vuejs/vue-router/issues/2639
     app.$once('hook:destroyed', () => {
@@ -184,6 +191,11 @@ export default class VueRouter {
     this.go(1)
   }
 
+  /**
+   * 返回目标位置或是当前路由匹配的组件数组 (是数组的定义/构造类，不是实例)。通常在服务端渲染的数据预加载时使用。
+   * @param to
+   * @returns {*}
+   */
   getMatchedComponents (to?: RawLocation | Route): Array<any> {
     const route: any = to
       ? to.matched
@@ -200,6 +212,13 @@ export default class VueRouter {
     }))
   }
 
+  /**
+   * 解析目标位置
+   * @param to
+   * @param current
+   * @param append
+   * @returns {{location: Location, route: Route, href: *, normalizedTo: Location, resolved: Route}}
+   */
   resolve (
     to: RawLocation,
     current?: Route,
@@ -233,6 +252,10 @@ export default class VueRouter {
     }
   }
 
+  /**
+   * 动态添加路由
+   * @param routes
+   */
   addRoutes (routes: Array<RouteConfig>) {
     this.matcher.addRoutes(routes)
     if (this.history.current !== START) {
@@ -241,6 +264,12 @@ export default class VueRouter {
   }
 }
 
+/**
+ * 注册钩子函数 , 返回一个移除已注册的守卫/钩子的函数
+ * @param list
+ * @param fn
+ * @returns {Function}
+ */
 function registerHook (list: Array<any>, fn: Function): Function {
   list.push(fn)
   return () => {
@@ -249,6 +278,13 @@ function registerHook (list: Array<any>, fn: Function): Function {
   }
 }
 
+/**
+ * 创建完整链接
+ * @param base
+ * @param fullPath
+ * @param mode
+ * @returns {string}
+ */
 function createHref (base: string, fullPath: string, mode) {
   var path = mode === 'hash' ? '#' + fullPath : fullPath
   return base ? cleanPath(base + '/' + path) : path

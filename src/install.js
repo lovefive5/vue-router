@@ -23,6 +23,7 @@ export function install (Vue) {
       if (isDef(this.$options.router)) {
         this._routerRoot = this
         this._router = this.$options.router
+        // 执行初始化函数
         this._router.init(this)
         Vue.util.defineReactive(this, '_route', this._router.history.current)
       } else {
@@ -35,17 +36,24 @@ export function install (Vue) {
     }
   })
 
+  // 将 $router 和 $route 添加到Vue的原型上
   Object.defineProperty(Vue.prototype, '$router', {
-    get () { return this._routerRoot._router }
+    get () {
+      return this._routerRoot._router
+    }
   })
 
   Object.defineProperty(Vue.prototype, '$route', {
-    get () { return this._routerRoot._route }
+    get () {
+      return this._routerRoot._route
+    }
   })
 
+  // 注册 RouterView 和 RouterLink 组件
   Vue.component('RouterView', View)
   Vue.component('RouterLink', Link)
 
+  // 定义合并策略
   const strats = Vue.config.optionMergeStrategies
   // use the same hook merging strategy for route hooks
   strats.beforeRouteEnter = strats.beforeRouteLeave = strats.beforeRouteUpdate = strats.created

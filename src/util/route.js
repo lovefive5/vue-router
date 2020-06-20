@@ -11,6 +11,7 @@ export function createRoute (
   redirectedFrom?: ?Location,
   router?: VueRouter
 ): Route {
+  // 提供自定义查询字符串的解析/反解析函数。覆盖默认行为
   const stringifyQuery = router && router.options.stringifyQuery
 
   let query: any = location.query || {}
@@ -31,6 +32,7 @@ export function createRoute (
   if (redirectedFrom) {
     route.redirectedFrom = getFullPath(redirectedFrom, stringifyQuery)
   }
+  // 冻结 route 对象，防止变更
   return Object.freeze(route)
 }
 
